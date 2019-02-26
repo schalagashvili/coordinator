@@ -1,6 +1,7 @@
 import React from 'react'
-import { Dimensions, Text, View } from 'react-native'
+import { Dimensions, View } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
+import { Coordinates, SmallText, CoordinatesContainer } from './styles'
 
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
@@ -23,8 +24,8 @@ export default class App extends React.Component {
         <MapView
           style={{ width: WIDTH, height: HEIGHT, position: 'relative' }}
           initialRegion={{
-            latitude: latitude,
-            longitude: longitude,
+            latitude: latitude && latitude,
+            longitude: longitude && longitude,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA
           }}
@@ -34,20 +35,12 @@ export default class App extends React.Component {
           )}
         </MapView>
         {tracking && (
-          <View
-            style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.5);',
-              width: WIDTH,
-              position: 'absolute',
-              bottom: 43,
-              paddingBottom: 15
-            }}
-          >
-            <Text style={{ textAlign: 'center', color: 'white' }}>Your Coordinates:</Text>
-            <Text style={{ textAlign: 'center', color: 'white' }}>Latitude: {latitude}</Text>
-            <Text style={{ textAlign: 'center', color: 'white' }}>longitude: {longitude}</Text>
-            <Text style={{ textAlign: 'center', color: 'white', fontSize: 9 }}>* This coordinates are updated every 1200ms}</Text>
-          </View>
+          <CoordinatesContainer width={WIDTH}>
+            <Coordinates>Your Coordinates:</Coordinates>
+            <Coordinates>Latitude: {latitude}</Coordinates>
+            <Coordinates>longitude: {longitude}</Coordinates>
+            <SmallText>* Coordinates are updated every 1200ms}</SmallText>
+          </CoordinatesContainer>
         )}
       </View>
     )

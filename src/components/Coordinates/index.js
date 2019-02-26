@@ -1,21 +1,40 @@
 import React, { Component } from 'react'
-import { Platform, Text, View, StyleSheet } from 'react-native'
-import { Constants, Location, Permissions } from 'expo'
+import { Location, Permissions } from 'expo'
 import Map from '../Map'
+import { ToggleWrapper, Container } from './styles'
+import Switch from '../Switch'
 
 export default class App extends Component {
   state = {
     location: null,
     longitude: null,
     latitude: null,
-    errorMessage: null
+    tracking: false,
+    errorMessage: null,
+    switchValue: false
   }
 
-  componentDidMount() {
-    this._getLocationAsync()
-    setInterval(() => {
+  componentWillUnmount() {
+    if (this.state.tracking) {
+      clearInterval(this.state.tracking)
+    }
+  }
+
+  toggleSwitch = value => {
+    this.setState({ switchValue: value })
+    this.trackingLocation()
+  }
+
+  trackingLocation = () => {
+    if (!this.state.switchValue) {
       this._getLocationAsync()
-    }, 1200)
+      const tracking = setInterval(() => {
+        this._getLocationAsync()
+      }, 1200)
+      this.setState({ tracking })
+    } else {
+      clearInterval(this.state.tracking)
+    }
   }
 
   _getLocationAsync = async () => {
@@ -31,11 +50,18 @@ export default class App extends Component {
   }
 
   render() {
+    const { latitude, longitude, switchValue, errorMessage } = this.state
+
     return (
-      <View>
-        <Text>{this.state.location}</Text>
-        <Map latitude={this.state.latitude} longitude={this.state.longitude} tracking={this.props.tracking} />
-      </View>
+      <Container>
+        <Container>
+          <Map latitude={latitude} longitude={longitude} tracking={switchValue} />
+        </Container>
+        <ToggleWrapper>
+          <Switch toggleSwitch={this.toggleSwitch} switchValue={switchValue} />
+        </ToggleWrapper>
+        {errorMessage && <Text>{errorMessage}</Text>}
+      </Container>
     )
   }
 }

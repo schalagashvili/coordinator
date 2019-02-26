@@ -1,37 +1,31 @@
-import React from 'react'
-import { createBottomTabNavigator, createAppContainer, createStackNavigator } from 'react-navigation'
-import Ionicons from 'react-native-vector-icons/AntDesign'
+import Login from './screens/Login'
+import DashboardTabRoutes from './screens/Dashboard/Routes'
+import { createStackNavigator, createAppContainer } from 'react-navigation'
+import { HeaderStyles } from './styles/mixins'
 
-import { HomeScreen, LoginScreen } from './screens'
-
-const MainNavigator = createBottomTabNavigator(
+const Routes = createStackNavigator(
   {
-    Login: { screen: LoginScreen },
-    Home: { screen: HomeScreen }
+    Login: {
+      screen: Login,
+      navigationOptions: {
+        headerTitle: 'Login',
+        header: null
+      }
+    },
+    Dashboard: {
+      screen: DashboardTabRoutes,
+      navigationOptions: {
+        header: null
+      }
+    }
   },
   {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ horizontal, tintColor }) => {
-        const { routeName } = navigation.state
-        let iconName
-        if (routeName === 'Home') {
-          iconName = 'home'
-        } else if (routeName === 'Login') {
-          // iconName = 'bookmark'
-        }
-
-        return <Ionicons name={iconName} size={horizontal ? 20 : 25} color={tintColor} />
-      }
-    }),
-    tabBarOptions: {
-      activeTintColor: '#478aff',
-      inactiveTintColor: 'gray'
+    initialRouteName: 'Login',
+    navigationOptions: {
+      ...HeaderStyles,
+      animationEnabled: true
     }
   }
 )
 
-const HomeStack = createStackNavigator({
-  Home: { screen: MainNavigator }
-})
-
-export default createAppContainer(MainNavigator)
+export default createAppContainer(Routes)

@@ -1,6 +1,12 @@
 import { LOGIN_USER_STARTED, LOGIN_USER_SECCEEDED, LOGIN_USER_FAILED } from '../actionTypes'
 
-export default (state = {}, action) => {
+const initialState = {
+  loading: false,
+  errors: {},
+  data: {}
+}
+
+export default (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_USER_STARTED:
       return {
